@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bootdo.ofo.dao.HbRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.bootdo.ofo.domain.HbRecord" >
+    <id column="record_id" property="recordId" jdbcType="INTEGER" />
+    <result column="record_userid" property="recordUserid" jdbcType="INTEGER" />
+    <result column="record_type" property="recordType" jdbcType="INTEGER" />
+    <result column="record_message" property="recordMessage" jdbcType="VARCHAR" />
+    <result column="record_createtime" property="recordCreatetime" jdbcType="TIMESTAMP" />
+    <result column="record_image" property="recordImage" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    record_id, record_userid, record_type, record_message, record_createtime, record_image
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bootdo.ofo.domain.HbRecordExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from hb_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hb_record
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hb_record
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bootdo.ofo.domain.HbRecordExample" >
+    delete from hb_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bootdo.ofo.domain.HbRecord" >
+    insert into hb_record (record_id, record_userid, record_type, 
+      record_message, record_createtime, record_image
+      )
+    values (#{recordId,jdbcType=INTEGER}, #{recordUserid,jdbcType=INTEGER}, #{recordType,jdbcType=INTEGER}, 
+      #{recordMessage,jdbcType=VARCHAR}, #{recordCreatetime,jdbcType=TIMESTAMP}, #{recordImage,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bootdo.ofo.domain.HbRecord" >
+    insert into hb_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="recordId != null" >
+        record_id,
+      </if>
+      <if test="recordUserid != null" >
+        record_userid,
+      </if>
+      <if test="recordType != null" >
+        record_type,
+      </if>
+      <if test="recordMessage != null" >
+        record_message,
+      </if>
+      <if test="recordCreatetime != null" >
+        record_createtime,
+      </if>
+      <if test="recordImage != null" >
+        record_image,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="recordId != null" >
+        #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="recordUserid != null" >
+        #{recordUserid,jdbcType=INTEGER},
+      </if>
+      <if test="recordType != null" >
+        #{recordType,jdbcType=INTEGER},
+      </if>
+      <if test="recordMessage != null" >
+        #{recordMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="recordCreatetime != null" >
+        #{recordCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recordImage != null" >
+        #{recordImage,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bootdo.ofo.domain.HbRecordExample" resultType="java.lang.Integer" >
+    select count(*) from hb_record
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update hb_record
+    <set >
+      <if test="record.recordId != null" >
+        record_id = #{record.recordId,jdbcType=INTEGER},
+      </if>
+      <if test="record.recordUserid != null" >
+        record_userid = #{record.recordUserid,jdbcType=INTEGER},
+      </if>
+      <if test="record.recordType != null" >
+        record_type = #{record.recordType,jdbcType=INTEGER},
+      </if>
+      <if test="record.recordMessage != null" >
+        record_message = #{record.recordMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.recordCreatetime != null" >
+        record_createtime = #{record.recordCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.recordImage != null" >
+        record_image = #{record.recordImage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update hb_record
+    set record_id = #{record.recordId,jdbcType=INTEGER},
+      record_userid = #{record.recordUserid,jdbcType=INTEGER},
+      record_type = #{record.recordType,jdbcType=INTEGER},
+      record_message = #{record.recordMessage,jdbcType=VARCHAR},
+      record_createtime = #{record.recordCreatetime,jdbcType=TIMESTAMP},
+      record_image = #{record.recordImage,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bootdo.ofo.domain.HbRecord" >
+    update hb_record
+    <set >
+      <if test="recordUserid != null" >
+        record_userid = #{recordUserid,jdbcType=INTEGER},
+      </if>
+      <if test="recordType != null" >
+        record_type = #{recordType,jdbcType=INTEGER},
+      </if>
+      <if test="recordMessage != null" >
+        record_message = #{recordMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="recordCreatetime != null" >
+        record_createtime = #{recordCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="recordImage != null" >
+        record_image = #{recordImage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bootdo.ofo.domain.HbRecord" >
+    update hb_record
+    set record_userid = #{recordUserid,jdbcType=INTEGER},
+      record_type = #{recordType,jdbcType=INTEGER},
+      record_message = #{recordMessage,jdbcType=VARCHAR},
+      record_createtime = #{recordCreatetime,jdbcType=TIMESTAMP},
+      record_image = #{recordImage,jdbcType=VARCHAR}
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </update>
+</mapper>

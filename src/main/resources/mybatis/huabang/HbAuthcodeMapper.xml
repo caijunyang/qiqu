@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huabang.ofo.dao.HbAuthcodeMapper" >
+  <resultMap id="BaseResultMap" type="com.huabang.ofo.domain.HbAuthcode" >
+  </resultMap>
+  <select id="findTelephone" resultType="java.lang.Integer" >
+  	select count(*) from hb_authcode where telephone=#{telephone}
+  </select>
+  <select id="selectByTelephone" resultMap="BaseResultMap">
+  	select * from hb_authcode where telephone=#{telephone}
+  </select>
+  <insert id="addCode">
+  	insert into  hb_authcode (telephone,authcode,codetime)values(#{telephone},#{authcode},#{time})
+  </insert>
+  <update id="updateCode">
+  	update hb_authcode set authcode=#{authcode},codetime=#{time} where telephone=#{telephone}
+  </update>
+  <delete id="delBytime">
+	DELETE from hb_authcode where codetime<![CDATA[ < ]]>#{datetime}
+  </delete>
+</mapper>

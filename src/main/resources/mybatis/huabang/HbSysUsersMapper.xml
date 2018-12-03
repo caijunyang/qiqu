@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huabang.ofo.dao.HbSysUsersMapper" >
+  <resultMap id="BaseResultMap" type="com.huabang.ofo.domain.HbSysUser" >
+    <id column="sys_id" property="sysId" jdbcType="INTEGER" />
+    <result column="sys_phone" property="sysPhone" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    sys_id, sys_phone
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.huabang.ofo.domain.HbSysUserExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from hb_sys_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hb_sys_user
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hb_sys_user
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.huabang.ofo.domain.HbSysUserExample" >
+    delete from hb_sys_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.huabang.ofo.domain.HbSysUser" >
+    insert into hb_sys_user (sys_id, sys_phone)
+    values (#{sysId,jdbcType=INTEGER}, #{sysPhone,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.huabang.ofo.domain.HbSysUser" >
+    insert into hb_sys_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sysId != null" >
+        sys_id,
+      </if>
+      <if test="sysPhone != null" >
+        sys_phone,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sysId != null" >
+        #{sysId,jdbcType=INTEGER},
+      </if>
+      <if test="sysPhone != null" >
+        #{sysPhone,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.huabang.ofo.domain.HbSysUserExample" resultType="java.lang.Integer" >
+    select count(*) from hb_sys_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update hb_sys_user
+    <set >
+      <if test="record.sysId != null" >
+        sys_id = #{record.sysId,jdbcType=INTEGER},
+      </if>
+      <if test="record.sysPhone != null" >
+        sys_phone = #{record.sysPhone,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update hb_sys_user
+    set sys_id = #{record.sysId,jdbcType=INTEGER},
+      sys_phone = #{record.sysPhone,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huabang.ofo.domain.HbSysUser" >
+    update hb_sys_user
+    <set >
+      <if test="sysPhone != null" >
+        sys_phone = #{sysPhone,jdbcType=INTEGER},
+      </if>
+    </set>
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huabang.ofo.domain.HbSysUser" >
+    update hb_sys_user
+    set sys_phone = #{sysPhone,jdbcType=INTEGER}
+    where sys_id = #{sysId,jdbcType=INTEGER}
+  </update>
+</mapper>

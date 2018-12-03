@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.huabang.ofo.dao.DiscoversMapper">
+
+	<select id="get" resultType="com.huabang.ofo.domain.Discover">
+		select
+		`discover_id`,`discover_title`,`discover_image_url`,`discover_message`,`discover_end_time`,`discover_type`
+		from discover where discover_id = #{value}
+	</select>
+
+	<select id="list" resultType="com.huabang.ofo.domain.Discover">
+		select
+		`discover_id`,`discover_title`,`discover_image_url`,`discover_message`,`discover_end_time`,`discover_type`
+		from discover where discover_type = 0 order by discover_end_time desc
+	</select>
+	<select id="list2" resultType="com.huabang.ofo.domain.Discover">
+		select
+		`discover_id`,`discover_title`,`discover_image_url`,`discover_message`,`discover_end_time`,`discover_type`
+		from discover where discover_type = 1 order by discover_end_time desc
+	</select>
+
+</mapper>

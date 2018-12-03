@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport"
+	content="initial-scale=1.0, user-scalable=no, width=device-width">
+<title>Marker example</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<style type="text/css">
+body, html, #container {
+	height: 100%;
+	margin: 0px;
+	font: 12px Arial;
+}
+
+#container {
+	
+}
+
+.head_buts {
+	position: absolute;
+	left: 100px;
+	top: 5px;
+	z-index: 100;
+	height: 45px;
+	width: 600px;
+}
+
+#myPageTop {
+	position: absolute;
+	right: 0px;
+	top: 5px;
+	z-index: 100;
+	height: 45px;
+	width: 600px;
+}
+</style>
+</head>
+<body>
+	<div class="head_buts">
+		<button class="layui-btn layui-btn-normal layui-col-lg2"
+			id="addShareSpanceBut">添加单车分享点</button>
+		<input type="text" value=""
+			class="layui-btn layui-btn-primary layui-col-lg2" id="space_pot" />
+		<button class="layui-btn layui-btn-danger  layui-btn-xs layui-col-lg2"
+			id="searchPageBut">更多分享点</button>
+	</div>
+	<div id="container" tabindex="0"></div>
+	<div id="myPageTop">
+		<table>
+			<tr>
+				<td><label>地址查询：</label></td>
+			</tr>
+			<tr>
+				<td><input id="tipinput" /></td>
+			</tr>
+		</table>
+	</div>
+	<input type="hidden" value="" id="hiddenShareId">
+	<input type="hidden" value="" id="hiddenSharePot">
+	<script src="http://webapi.amap.com/js/marker.js"></script>
+	<script
+		src="http://webapi.amap.com/maps?v=1.4.2&key=861322c4281b7373a62e5854f7378a4d"></script>
+
+	<script type="text/javascript"
+		src="http://webapi.amap.com/demos/js/liteToolbar.js"></script>
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/plugins/layer/layer.min.js"></script>
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/layui/layui.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		var map = new AMap.Map('container', {
+			resizeEnable : true,
+			mapStyle : 'amap://styles/normal',
+			zoom : 4
+		});
+		AMap.plugin([ 'AMap.ToolBar', 'AMap.Geolocation', 'AMap.MapType',
+				'AMap.Scale', 'AMap.OverView', 'AMap.PlaceSearch',
+				'AMap.Autocomplete' ], function() {
+			map.addControl(new AMap.ToolBar());
+			map.addControl(new AMap.Geolocation());
+
+			map.addControl(new AMap.Scale());
+			map.addControl(new AMap.MapType());
+
+			map.addControl(new AMap.OverView({
+				isOpen : true
+			}));
+		});
+		//alert(JSON.stringify(provinces));
+
+		var iNum = 9999;
+		var startO = 1;
+		var pagesizeO = 100;
+		markersFunction(startO, pagesizeO);
+		//markersFunction(startO, pagesizeO);
+		function markersFunction(start, pagesize) {
+			var markers = []; //province见Demo引用的JS文件
+			var shareLocations = [];
+			$.ajax({
+				url : "/share/searchShareMapInfo",
+				data : {
+					"start" : start,
+					"pagesize" : pagesize
+				},
+				async : false,
+				type : "post",
+				dataType : "JSON",
+				success : function(data) {
+					if (JSON.stringify(data) == "[]") {
+						layer.msg("没有更多了");
+					}
+					shareLocations = data;
+				}
+			});
+			for (var i = 0; i < shareLocations.length; i += 1) {
+				var marker = new AMap.Marker({
+					position : shareLocations[i].sharePot.split(","),
+					title : "单车车牌号：" + shareLocations[i].shareId,
+					map : map
+				});
+				marker.shareId = shareLocations[i].shareId;
+				marker.sharePot = shareLocations[i].sharePot;
+				eventsAdd(marker);
+				markers.push(marker);
+			}
+			//闭包解决循环绑定事件
+			function eventsAdd(marker) {
+				AMap.event.addListener(marker, 'click', (function(i) {
+					return function() {
+						//iframe窗
+						openIframe(marker);
+					}
+				})(i));
+			}
+		}
+		//为地图注册click事件获取鼠标点击出的经纬度坐标
+		var clickEventListener = map.on('click', function(e) {
+			document.getElementById("space_pot").value = e.lnglat.getLng()
+					+ ',' + e.lnglat.getLat()
+		});
+		//输入提示
+		var autoOptions = {
+			input : "tipinput"
+		};
+		var auto = new AMap.Autocomplete(autoOptions);
+		var placeSearch = new AMap.PlaceSearch({
+			map : map
+		}); //构造地点查询类
+		AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+		function select(e) {
+			placeSearch.setCity(e.poi.adcode);
+			placeSearch.search(e.poi.name); //关键字查询查询
+		}
+	</script>
+	<script type="text/javascript">
+		function openIframe(marker) {
+			$("#hiddenShareId").attr("value", marker.shareId);
+			$("#hiddenSharePot").attr("value", marker.sharePot);
+			layer.open({
+				type : 2,
+				title : '单车详细信息',
+				shadeClose : true,
+				shade : false,
+				maxmin : true, //开启最大化最小化按钮
+				area : [ '500px', '260px' ],
+				content : '/share/toDetailPage',
+				end : function() {
+					window.location.href = "/share";
+					/* markersFunction(1, 3000); */
+				}
+			});
+		}
+		$("#addShareSpanceBut").click(function() {
+			//iframe层
+			layer.open({
+				type : 2,
+				title : '新增单车分享点',
+				shadeClose : true,
+				shade : 0.8,
+				area : [ '500px', '230px' ],
+				content : '/share/addShare', //iframe的url
+				end : function() {
+					//window.location.href = "/share";
+					map.clear;
+					markersFunction(1, 3000);
+				}
+			});
+		});
+		$("#searchPageBut").click(function() {
+			startO = startO + 1;
+			markersFunction(startO, pagesizeO);
+		});
+	</script>
+
+</body>
+</html>

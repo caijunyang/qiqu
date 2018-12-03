@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bootdo.ofo.dao.HbUserCashMapper" >
+  <resultMap id="BaseResultMap" type="com.bootdo.ofo.domain.HbUserCash" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_cash" property="userCash" jdbcType="DOUBLE" />
+    <result column="user_cash_type" property="userCashType" jdbcType="INTEGER" />
+    <result column="user_cash_status" property="userCashStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    user_id, user_cash, user_cash_type, user_cash_status
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bootdo.ofo.domain.HbUserCashExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from hb_user_cash
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from hb_user_cash
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from hb_user_cash
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bootdo.ofo.domain.HbUserCashExample" >
+    delete from hb_user_cash
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bootdo.ofo.domain.HbUserCash" >
+    insert into hb_user_cash (user_id, user_cash, user_cash_type, 
+      user_cash_status)
+    values (#{userId,jdbcType=VARCHAR}, #{userCash,jdbcType=DOUBLE}, #{userCashType,jdbcType=INTEGER}, 
+      #{userCashStatus,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bootdo.ofo.domain.HbUserCash" >
+    insert into hb_user_cash
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="userCash != null" >
+        user_cash,
+      </if>
+      <if test="userCashType != null" >
+        user_cash_type,
+      </if>
+      <if test="userCashStatus != null" >
+        user_cash_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userCash != null" >
+        #{userCash,jdbcType=DOUBLE},
+      </if>
+      <if test="userCashType != null" >
+        #{userCashType,jdbcType=INTEGER},
+      </if>
+      <if test="userCashStatus != null" >
+        #{userCashStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bootdo.ofo.domain.HbUserCashExample" resultType="java.lang.Integer" >
+    select count(*) from hb_user_cash
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update hb_user_cash
+    <set >
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userCash != null" >
+        user_cash = #{record.userCash,jdbcType=DOUBLE},
+      </if>
+      <if test="record.userCashType != null" >
+        user_cash_type = #{record.userCashType,jdbcType=INTEGER},
+      </if>
+      <if test="record.userCashStatus != null" >
+        user_cash_status = #{record.userCashStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update hb_user_cash
+    set user_id = #{record.userId,jdbcType=VARCHAR},
+      user_cash = #{record.userCash,jdbcType=DOUBLE},
+      user_cash_type = #{record.userCashType,jdbcType=INTEGER},
+      user_cash_status = #{record.userCashStatus,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bootdo.ofo.domain.HbUserCash" >
+    update hb_user_cash
+    <set >
+      <if test="userCash != null" >
+        user_cash = #{userCash,jdbcType=DOUBLE},
+      </if>
+      <if test="userCashType != null" >
+        user_cash_type = #{userCashType,jdbcType=INTEGER},
+      </if>
+      <if test="userCashStatus != null" >
+        user_cash_status = #{userCashStatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bootdo.ofo.domain.HbUserCash" >
+    update hb_user_cash
+    set user_cash = #{userCash,jdbcType=DOUBLE},
+      user_cash_type = #{userCashType,jdbcType=INTEGER},
+      user_cash_status = #{userCashStatus,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/layui/css/layui.css">
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div class="layui-container">
+
+		<div class="layui-form">
+			<table class="layui-table">
+				<colgroup>
+					<col width="180">
+					<col width="500">
+				</colgroup>
+				<tbody>
+					<tr>
+						<td>
+						车牌号：</td>
+						<td><input type="text" name="shareId" readonly="readonly"
+							lay-verify="required|title" autocomplete="off"
+							class="layui-input" id="hiddenShareId"></td>
+					</tr>
+					<tr>
+						<td>
+						所在经纬度：</td>
+						<td><input type="text" name="sharePot"
+							lay-verify="required|title" autocomplete="off"
+							class="layui-input" id="hiddenSharePot"></td>
+					</tr>
+					<tr>
+						<td>
+							<button class="layui-btn" type="button" lay-submit=""
+								lay-filter="submitBut" >修改</button>
+						</td>
+						<td>
+							<button class="layui-btn" type="button" lay-submit=""
+								lay-filter="submitUp" >删除</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/layui/layui.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		layui.use([ 'form', 'layer' ], function() {
+			var form = layui.form;
+			var layer = layui.layer;
+			var hiddenShareId = parent.$("#hiddenShareId").val();
+			var hiddenSharePot = parent.$("#hiddenSharePot").val();
+			$("#hiddenSharePot").attr("value",hiddenSharePot); 
+			$("#hiddenShareId").attr("value",hiddenShareId);
+			//监听提交
+			var index = parent.layer.getFrameIndex(window.name);
+			form.on('submit(submitBut)', function(data) {
+				$.post("updateShareById",data.field,function(msg){
+					if(msg){
+						layer.msg("修改成功");
+						setTimeout(function(){
+							parent.layer.close(index);
+			          	},500);
+						map.clear;
+						markersFunction(1,3000);
+					}else{
+						layer.msg("修改失败");
+					}
+				});
+				return false;
+			});
+			form.on('submit(submitUp)', function(data) {
+				$.post("deleteShareById",data.field,function(msg){
+					if(msg){
+						layer.msg("删除成功");
+						setTimeout(function(){
+							parent.layer.close(index);
+			          	},500);
+						map.clear;
+						markersFunction(1,3000);
+					}else{
+						layer.msg("删除失败");
+					}
+				});
+				return false;
+			});
+		});
+	</script>
+</body>
+</html>

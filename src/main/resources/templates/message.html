@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<body class="gray-bg">
+
+	<div id="tit" class="tit"></div>
+	<div id="message" class="message"></div>
+	<p style="display: none" class="lat" id="lat" th:text="${message}"></p>
+	<p style="display: none" class="title" id="title" th:text="${title}"></p>
+</body>
+<script src="/js/jquery.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		var title = $("#title").text();
+		var message = $("#lat").text();
+		$("#tit").html("<h1 align='center'>" + title + "</h1>");
+		//$("#message").html("<p><img src='http://localhost:8080/blog/bContent/image/4e214a59-9388-4854-8b2b-5f6147f20d84.jpg' style='width: 25%; float: left;' class='note-float-left'><iframe webkitallowfullscreen='' mozallowfullscreen='' allowfullscreen='' frameborder='0' height='310' width='500' src='http://v.qq.com/iframe/player.html?vid=g0607q7zpgh&amp;amp;auto=0' class='note-video-clip'></iframe><br></p>");
+		$("#message").html(message);
+	})
+</script>
+</html>

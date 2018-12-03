@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bootdo.ofo.dao.HbJourneyMapper" >
+  <resultMap id="BaseResultMap" type="com.bootdo.ofo.domain.HbJourney" >
+    <id column="journey_id" property="journeyId" jdbcType="VARCHAR" />
+    <result column="journey_userid" property="journeyUserid" jdbcType="VARCHAR" />
+    <result column="journey_shareid" property="journeyShareid" jdbcType="VARCHAR" />
+    <result column="journey_time" property="journeyTime" jdbcType="INTEGER" />
+    <result column="journey_money" property="journeyMoney" jdbcType="DOUBLE" />
+    <result column="journey_distance" property="journeyDistance" jdbcType="DOUBLE" />
+    <result column="journey_startpot" property="journeyStartpot" jdbcType="VARCHAR" />
+    <result column="journey_endpot" property="journeyEndpot" jdbcType="VARCHAR" />
+    <result column="journey_createtime" property="journeyCreatetime" jdbcType="TIMESTAMP" />
+    <result column="journey_endtime" property="journeyEndtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    journey_id, journey_userid, journey_shareid, journey_time, journey_money, journey_distance, 
+    journey_startpot, journey_endpot, journey_createtime, journey_endtime
+  </sql>
+  <sql id="Base_Column_List2" >
+    journey_id, journey_userid, journey_shareid, journey_time, journey_money, journey_distance, 
+    journey_startpot, journey_endpot, journey_createtime, journey_endtime,u.user_name,u.user_image
+  </sql>
+  <sql id="Column_List" >
+    journey_id,journey_userid,journey_shareid,journey_money,journey_createtime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.bootdo.ofo.domain.HbJourneyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from hb_journey
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from hb_journey
+    where journey_id = #{journeyId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByKey" resultType="map" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List2" />
+    from hb_journey INNER JOIN (select us.user_id,us.user_name,us.user_image from hb_user as us) as u
+ on journey_userid = u.user_id where journey_id = #{journeyId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPhone" resultType="com.bootdo.ofo.domain.HbJourney" parameterType="java.lang.String" >
+    select 
+    <include refid="Column_List" />
+    from hb_journey as j 
+	INNER JOIN (select user_id from hb_user where user_phone = #{userPhone}) u 
+	on u.user_id = j.journey_userid
+  </select>
+  <select id="selectByShareId" resultType="com.bootdo.ofo.domain.HbJourney" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from hb_journey where journey_shareid = #{shareId} order by journey_createtime desc limit 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from hb_journey
+    where journey_id = #{journeyId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.bootdo.ofo.domain.HbJourneyExample" >
+    delete from hb_journey
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.bootdo.ofo.domain.HbJourney" >
+    insert into hb_journey (journey_id, journey_userid, journey_shareid, 
+      journey_time, journey_money, journey_distance, 
+      journey_startpot, journey_endpot, journey_createtime, 
+      journey_endtime)
+    values (#{journeyId,jdbcType=VARCHAR}, #{journeyUserid,jdbcType=VARCHAR}, #{journeyShareid,jdbcType=VARCHAR}, 
+      #{journeyTime,jdbcType=INTEGER}, #{journeyMoney,jdbcType=DOUBLE}, #{journeyDistance,jdbcType=DOUBLE}, 
+      #{journeyStartpot,jdbcType=VARCHAR}, #{journeyEndpot,jdbcType=VARCHAR}, #{journeyCreatetime,jdbcType=TIMESTAMP}, 
+      #{journeyEndtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bootdo.ofo.domain.HbJourney" >
+    insert into hb_journey
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="journeyId != null" >
+        journey_id,
+      </if>
+      <if test="journeyUserid != null" >
+        journey_userid,
+      </if>
+      <if test="journeyShareid != null" >
+        journey_shareid,
+      </if>
+      <if test="journeyTime != null" >
+        journey_time,
+      </if>
+      <if test="journeyMoney != null" >
+        journey_money,
+      </if>
+      <if test="journeyDistance != null" >
+        journey_distance,
+      </if>
+      <if test="journeyStartpot != null" >
+        journey_startpot,
+      </if>
+      <if test="journeyEndpot != null" >
+        journey_endpot,
+      </if>
+      <if test="journeyCreatetime != null" >
+        journey_createtime,
+      </if>
+      <if test="journeyEndtime != null" >
+        journey_endtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="journeyId != null" >
+        #{journeyId,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyUserid != null" >
+        #{journeyUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyShareid != null" >
+        #{journeyShareid,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyTime != null" >
+        #{journeyTime,jdbcType=INTEGER},
+      </if>
+      <if test="journeyMoney != null" >
+        #{journeyMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="journeyDistance != null" >
+        #{journeyDistance,jdbcType=DOUBLE},
+      </if>
+      <if test="journeyStartpot != null" >
+        #{journeyStartpot,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyEndpot != null" >
+        #{journeyEndpot,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyCreatetime != null" >
+        #{journeyCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="journeyEndtime != null" >
+        #{journeyEndtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.bootdo.ofo.domain.HbJourneyExample" resultType="java.lang.Integer" >
+    select count(*) from hb_journey
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update hb_journey
+    <set >
+      <if test="record.journeyId != null" >
+        journey_id = #{record.journeyId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.journeyUserid != null" >
+        journey_userid = #{record.journeyUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.journeyShareid != null" >
+        journey_shareid = #{record.journeyShareid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.journeyTime != null" >
+        journey_time = #{record.journeyTime,jdbcType=INTEGER},
+      </if>
+      <if test="record.journeyMoney != null" >
+        journey_money = #{record.journeyMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="record.journeyDistance != null" >
+        journey_distance = #{record.journeyDistance,jdbcType=DOUBLE},
+      </if>
+      <if test="record.journeyStartpot != null" >
+        journey_startpot = #{record.journeyStartpot,jdbcType=VARCHAR},
+      </if>
+      <if test="record.journeyEndpot != null" >
+        journey_endpot = #{record.journeyEndpot,jdbcType=VARCHAR},
+      </if>
+      <if test="record.journeyCreatetime != null" >
+        journey_createtime = #{record.journeyCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.journeyEndtime != null" >
+        journey_endtime = #{record.journeyEndtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update hb_journey
+    set journey_id = #{record.journeyId,jdbcType=VARCHAR},
+      journey_userid = #{record.journeyUserid,jdbcType=VARCHAR},
+      journey_shareid = #{record.journeyShareid,jdbcType=VARCHAR},
+      journey_time = #{record.journeyTime,jdbcType=INTEGER},
+      journey_money = #{record.journeyMoney,jdbcType=DOUBLE},
+      journey_distance = #{record.journeyDistance,jdbcType=DOUBLE},
+      journey_startpot = #{record.journeyStartpot,jdbcType=VARCHAR},
+      journey_endpot = #{record.journeyEndpot,jdbcType=VARCHAR},
+      journey_createtime = #{record.journeyCreatetime,jdbcType=TIMESTAMP},
+      journey_endtime = #{record.journeyEndtime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bootdo.ofo.domain.HbJourney" >
+    update hb_journey
+    <set >
+      <if test="journeyUserid != null" >
+        journey_userid = #{journeyUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyShareid != null" >
+        journey_shareid = #{journeyShareid,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyTime != null" >
+        journey_time = #{journeyTime,jdbcType=INTEGER},
+      </if>
+      <if test="journeyMoney != null" >
+        journey_money = #{journeyMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="journeyDistance != null" >
+        journey_distance = #{journeyDistance,jdbcType=DOUBLE},
+      </if>
+      <if test="journeyStartpot != null" >
+        journey_startpot = #{journeyStartpot,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyEndpot != null" >
+        journey_endpot = #{journeyEndpot,jdbcType=VARCHAR},
+      </if>
+      <if test="journeyCreatetime != null" >
+        journey_createtime = #{journeyCreatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="journeyEndtime != null" >
+        journey_endtime = #{journeyEndtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where journey_id = #{journeyId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bootdo.ofo.domain.HbJourney" >
+    update hb_journey
+    set journey_userid = #{journeyUserid,jdbcType=VARCHAR},
+      journey_shareid = #{journeyShareid,jdbcType=VARCHAR},
+      journey_time = #{journeyTime,jdbcType=INTEGER},
+      journey_money = #{journeyMoney,jdbcType=DOUBLE},
+      journey_distance = #{journeyDistance,jdbcType=DOUBLE},
+      journey_startpot = #{journeyStartpot,jdbcType=VARCHAR},
+      journey_endpot = #{journeyEndpot,jdbcType=VARCHAR},
+      journey_createtime = #{journeyCreatetime,jdbcType=TIMESTAMP},
+      journey_endtime = #{journeyEndtime,jdbcType=TIMESTAMP}
+    where journey_id = #{journeyId,jdbcType=VARCHAR}
+  </update>
+  
+    <select id="list" resultType="map">
+		select j.journey_id,u.user_name,s.share_id,j.journey_time,j.journey_money,j.journey_distance,j.journey_createtime from hb_journey j INNER JOIN hb_user u on j.journey_userid = u.user_id 
+INNER JOIN hb_share s on j.journey_shareid = s.share_id where 1=1
+  		  <if test="userName != null and userName != ''"> and u.user_name = #{userName} </if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from hb_journey j INNER JOIN hb_user u on j.journey_userid = u.user_id 
+INNER JOIN hb_share s on j.journey_shareid = s.share_id where 1=1
+  		  <if test="userName != null and userName != ''"> and u.user_name = #{userName} </if>
+	</select>
+	
+	<delete id="batchRemove">
+		delete from hb_journey where journey_id in 
+		<foreach item="journey_id" collection="array" open="(" separator="," close=")">
+			#{journey_id}
+		</foreach>
+	</delete>
+  
+  
+  
+</mapper>

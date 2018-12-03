@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.blog.dao.DiscoverMapper">
+
+	<select id="get" resultType="com.bootdo.blog.domain.Discover">
+		select
+		`discover_id`,`discover_title`,`discover_image_url`,`discover_message`,`discover_end_time`,`discover_type`
+		from discover where discover_id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.blog.domain.Discover">
+		select
+		`discover_id`,`discover_title`,`discover_image_url`,`discover_message`,`discover_end_time`,`discover_type` 
+		from discover
+		<where>
+			<if test="discover_id != null and discover_id != ''"> and discover_id = #{discoverId} </if>
+			<if test="discover_title != null and discover_title != ''"> and discover_title = #{discoverTitle} </if>
+			<if test="discover_type != null and discover_type != ''"> and discover_type = #{discoverType} </if>
+		</where>
+		<choose>
+			<otherwise>
+				order by discover_end_time desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit ${offset}, ${limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from discover
+		<where>
+			<if test="discover_id != null and discover_id != ''"> and discover_id = #{discoverId} </if>
+			<if test="discover_title != null and discover_title != ''"> and discover_title = #{discoverTitle} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.bootdo.blog.domain.Discover"
+		useGeneratedKeys="true" keyProperty="discover_id">
+		insert into discover
+		(
+		`discover_id`,
+		`discover_title`,
+		`discover_image_url`,
+		`discover_message`,
+		`discover_end_time`,
+		`discover_type`
+		)
+		values
+		(
+		#{discoverId},
+		#{discoverTitle},
+		#{discoverImageUrl},
+		#{discoverMessage},
+		#{discoverEndTime},
+		#{discoverType}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.bootdo.blog.domain.Discover">
+		update discover set 
+		discover_title= #{discoverTitle},
+		discover_image_url= #{discoverImageUrl},
+		discover_message= #{discoverMessage},
+		discover_end_time= #{discoverEndTime}
+		where discover_id = #{discoverId}
+	</update>
+
+	<delete id="remove" parameterType="java.lang.String">
+		delete from discover where discover_id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from discover where discover_id in
+		<foreach item="discoverId" collection="array" open="("
+			separator="," close=")">
+			#{discoverId}
+		</foreach>
+	</delete>
+
+</mapper>
