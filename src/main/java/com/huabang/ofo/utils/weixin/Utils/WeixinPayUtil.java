@@ -67,7 +67,7 @@ public class WeixinPayUtil {
         prepayReqHandler.setParameter("time_start", timestamp);
         System.out.println(String.valueOf(total_fee));
         prepayReqHandler.setParameter("total_fee", String.valueOf(total_fee));
-        prepayReqHandler.setParameter("trade_type", "JSAPI");
+        prepayReqHandler.setParameter("trade_type", request.getAttribute("trade_type"));
         prepayReqHandler.setParameter("sign", prepayReqHandler.createMD5Sign());
 	    prepayReqHandler.setGateUrl(ConstantUtil.GATEURL);
         /**

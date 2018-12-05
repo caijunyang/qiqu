@@ -318,10 +318,13 @@ public class UsersController{
 		String telephone = (String)map.get("telephone");
 		String money = (String)map.get("money");
 		String type = (String)map.get("type");//aliy:支付宝,weix:微信支付
+		String client = (String)map.get("client");//客户端类型 2为小程序，其他为APP，可以空，空为APP
+		
 		request.setAttribute("title", "充值余额");
 		request.setAttribute("totalMoney", money);
 		request.setAttribute("telephone", telephone);
 		request.setAttribute("type", "1");
+		request.setAttribute("trade_type", client.equals("2")?"JSAPI":"APP");
 		if(type.equals("aliy")){
 			AliPayUtil util = new AliPayUtil(userServiceImpl);
 			JSONObject pay = util.pay(request);
