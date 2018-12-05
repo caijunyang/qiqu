@@ -1,5 +1,6 @@
 package com.huabang.ofo.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,6 +42,7 @@ import com.huabang.ofo.utils.FileUtil;
 import com.huabang.ofo.utils.SendMsgUtils2;
 import com.huabang.ofo.utils.alipay.util.AliPayUtil;
 import com.huabang.ofo.utils.weixin.Utils.WeixinPayUtil;
+import com.refund.impl;
 
 @Controller
 @RequestMapping("/user")
@@ -332,6 +334,19 @@ public class UsersController{
 			return pay;
 		}
 		return null;
+	}
+	
+	
+	//退款接口
+	@RequestMapping("/returnMoney")
+	@ResponseBody
+	public JSONObject returMoney(HttpServletRequest request) throws UnsupportedEncodingException {
+	//根据订单号查出金额和积分
+	String refund=new impl().refund(request);
+	JSONObject JSONObject=new JSONObject();
+	JSONObject.put("msg", refund);
+	return JSONObject;
+
 	}
 	
 	/**
