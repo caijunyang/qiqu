@@ -314,4 +314,9 @@
   <select id="findByUserid" resultMap="BaseResultMap">
   	select * from hb_journey where journey_userid=#{userid}
   </select>
+  
+	<select id="findByUserIdUse" parameterType="java.lang.String" resultType="com.huabang.ofo.domain.HbJourney" >
+		select  <include refid="Base_Column_List" ></include>
+	   	from hb_journey where journey_userid = #{userId} and journey_endtime is null order by journey_createtime desc limit 1
+	</select>
 </mapper>

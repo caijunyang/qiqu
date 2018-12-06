@@ -39,4 +39,6 @@ public interface HbJourneysMapper {
 	Map<String,Object> selectByKey(String journeyId);
 
 	ArrayList<HbJourney> findByUserid(String userid);
+
+	HbJourney findByUserIdUse(String userId);
 }

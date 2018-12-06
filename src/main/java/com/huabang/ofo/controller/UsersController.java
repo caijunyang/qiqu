@@ -285,6 +285,7 @@ public class UsersController{
 		
 		String telephone = (String)map.get("telephone");
 		String type = (String)map.get("type");
+		String client = (String)map.getOrDefault("client","1");//客户端类型 2为小程序，其他为APP，可以空，空为APP
 		List<HbCashmoney> searchMoney = cashService.searchMoney();
 		Integer cashMoney = searchMoney.get(0).getCashMoney();
 		
@@ -295,6 +296,7 @@ public class UsersController{
 		request.setAttribute("cashType", "0");
 		request.setAttribute("telephone", telephone);
 		request.setAttribute("type", "0");
+		request.setAttribute("trade_type", client.equals("2")?"JSAPI":"APP");
 		JSONObject pay=null;
 		if(type.equals("aliy")){
 			AliPayUtil util = new AliPayUtil(userServiceImpl);
@@ -318,8 +320,8 @@ public class UsersController{
 		String telephone = (String)map.get("telephone");
 		String money = (String)map.get("money");
 		String type = (String)map.get("type");//aliy:支付宝,weix:微信支付
-		String client = (String)map.get("client");//客户端类型 2为小程序，其他为APP，可以空，空为APP
-		
+		String client = (String)map.getOrDefault("client","1");//客户端类型 2为小程序，其他为APP，可以空，空为APP
+	
 		request.setAttribute("title", "充值余额");
 		request.setAttribute("totalMoney", money);
 		request.setAttribute("telephone", telephone);
