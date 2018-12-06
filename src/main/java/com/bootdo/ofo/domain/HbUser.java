@@ -27,7 +27,18 @@ public class HbUser {
 
     private Integer userInvite;
 
-    public String getUserId() {
+    private Double accountTotel;
+    
+
+	public Double getAccountTotel() {
+		return accountTotel;
+	}
+
+	public void setAccountTotel(Double accountTotel) {
+		this.accountTotel = accountTotel;
+	}
+
+	public String getUserId() {
         return userId;
     }
 

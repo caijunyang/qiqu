@@ -55,6 +55,10 @@ function load() {
 									title : '用户头像地址'
 								},
 								{
+									field : 'accountTotel',
+									title : '用户余额'
+								},
+								{
 									field : 'userApprove',
 									title : '是否认证',
 									align : 'center',

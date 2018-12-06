@@ -1,31 +1,16 @@
 package com.huabang.ofo.utils.weixin.Utils;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.RandomStringUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.alibaba.fastjson.JSONObject;
 import com.huabang.ofo.domain.HbOrder;
 import com.huabang.ofo.domain.HbUser;
 import com.huabang.ofo.domain.HbUserCash;
 import com.huabang.ofo.service.UsersService;
-import com.huabang.ofo.utils.weixin.entity.Unifiedorder;
-import com.huabang.ofo.utils.weixin.entity.WeiXinConfig;
-import com.huabang.ofo.utils.weixin.entity.Weiwinreturn;
 import com.tenpay.PrepayIdRequestHandler;
 import com.tenpay.util.ConstantUtil;
 import com.tenpay.util.MD5Util;
@@ -49,11 +34,8 @@ public class WeixinPayUtil {
         Map<String, Object> map = new HashMap<String, Object>();
         // 获取生成预支付订单的请求类
         PrepayIdRequestHandler prepayReqHandler = new PrepayIdRequestHandler(request, response);
-        //String totalFee = request.getParameter("money");
         String totalFee =request.getAttribute("totalMoney").toString();
-        int total_fee=(int) (Float.valueOf(totalFee)*100);
-        System.out.println("total:"+total_fee);
-        System.out.println("total_fee:" + total_fee);
+        int total_fee=(int) (Float.valueOf(totalFee)*100);//金额单位默认是分
         prepayReqHandler.setParameter("appid", ConstantUtil.APP_ID);
         prepayReqHandler.setParameter("body", ConstantUtil.BODY);
         prepayReqHandler.setParameter("mch_id", ConstantUtil.MCH_ID);
@@ -95,7 +77,7 @@ public class WeixinPayUtil {
 				this.userServiceImpl.saveUserCash(cash);
 				order.setOrderType(0);
 				order.setOrderCashId(user.getUserId());
-			}else{
+			}else{//充值
 				order.setOrderType(1);
 				order.setOrderCashId(null);
 			}
@@ -105,8 +87,8 @@ public class WeixinPayUtil {
 			order.setOrderPrice(Double.parseDouble(String.valueOf(request.getAttribute("totalMoney"))));
 			order.setOrderUserid(user.getUserId());
 			this.userServiceImpl.saveOrder(order);
+			
 		        String prepayid = prepayReqHandler.sendPrepay();
-		        
 		        // 若获取prepayid成功，将相关信息返回客户端
 		        if (prepayid != null && !prepayid.equals("")) {
 		            String signs = "appid=" + ConstantUtil.APP_ID + "&noncestr=" + nonce_str + "&package=Sign=WXPay&partnerid="

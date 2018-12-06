@@ -80,4 +80,10 @@ public class UServiceImpl implements UService {
         return r;
     }
 
+
+	@Override
+	public List<HbUser> list2() {
+		return roleMapper.findall();
+	}
+
 }

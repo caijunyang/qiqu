@@ -22,4 +22,6 @@ public interface UService {
 	HbUser list(String userId);
 
 	int batchremove(String[] ids);
+
+	List<HbUser> list2();
 }

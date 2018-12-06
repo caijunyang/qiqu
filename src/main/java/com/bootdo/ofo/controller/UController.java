@@ -20,6 +20,8 @@ import com.bootdo.ofo.domain.HbShare;
 import com.bootdo.ofo.domain.HbUser;
 import com.bootdo.ofo.service.ShareService;
 import com.bootdo.ofo.service.UService;
+import com.huabang.ofo.dao.HbAccountsMapper;
+import com.huabang.ofo.domain.HbAccount;
 
 @RequestMapping("/user")
 @Controller
@@ -32,6 +34,7 @@ public class UController{
 	@Autowired
 	UService userService;
 	@Autowired
+	private HbAccountsMapper hbAccountMapper;
 	
 
 	@GetMapping("/index")
@@ -48,7 +51,10 @@ public class UController{
 	@GetMapping("/list")
 	@ResponseBody
 	List<HbUser> list() {
-		List<HbUser> roles = userService.list();
+		List<HbUser> roles = userService.list2();
+		for (HbUser hbUser : roles) {
+			System.out.println(hbUser.getAccountTotel());
+		}
 		return roles;
 	}
 	@GetMapping("/sharelist")

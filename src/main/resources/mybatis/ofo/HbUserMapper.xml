@@ -333,4 +333,7 @@
 			#{userId}
 		</foreach>
 	</delete>
+	<select id="findall" resultType="com.bootdo.ofo.domain.HbUser">
+		select * from hb_user left join hb_account on hb_user.user_id=hb_account.account_user_id
+	</select>
 </mapper>
