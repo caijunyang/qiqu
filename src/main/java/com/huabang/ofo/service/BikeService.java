@@ -8,4 +8,6 @@ public interface BikeService {
 
 	JSONObject endUseBike(String shareId, String pot);
 
+	JSONObject getUseBike(String telePhone);
+
 }

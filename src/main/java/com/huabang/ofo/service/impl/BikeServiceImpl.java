@@ -136,5 +136,23 @@ public class BikeServiceImpl implements BikeService {
 		object.put("msg", "结束用车失败");
 		return object;
 	}
-
+	@Override
+	public JSONObject getUseBike(String telePhone) {
+		HbUser user = this.hbUserMapper.selectByPhone(telePhone);
+		HbJourney journey = (HbJourney) this.hbJourneyMapper.findByUserIdUse(user.getUserId());
+		JSONObject object = new JSONObject();
+		if(journey!=null) {
+			object.put("code", "200");
+			object.put("msg", "");
+			JSONObject data = new JSONObject();
+			data.put("startime", journey.getJourneyCreatetime().toString());
+			object.put("data", data);
+		}
+		else {
+			object.put("code", "100");
+			object.put("msg", "查询为空");
+			object.put("data", "");
+		}
+		return object;
+	}
 }

@@ -60,4 +60,14 @@ public class BikeController {
 		return result;
 	}
 	
+	/**
+	 * 检查车辆是否在计费,返回计费开始时间
+	 */
+	@PostMapping("/userbike")
+	@ResponseBody
+	public JSONObject userBikelog(@RequestParam Map<String,String> map) {
+		String telePhone=(String)map.get("telePhone");
+		return this.bikeServiceImpl.getUseBike(telePhone);
+	}
+	
 }
