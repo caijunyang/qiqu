@@ -34,4 +34,6 @@ public interface HbUserMapper {
 
 	int batchRemove(String[] ids);
 
+	List<HbUser> findall();
+
 }
