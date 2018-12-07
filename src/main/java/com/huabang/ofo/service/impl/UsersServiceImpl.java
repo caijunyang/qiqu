@@ -28,6 +28,7 @@ import com.huabang.ofo.domain.HbShare;
 import com.huabang.ofo.domain.HbUser;
 import com.huabang.ofo.domain.HbUserCash;
 import com.huabang.ofo.service.UsersService;
+import com.refund.impl;
 
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
@@ -348,6 +349,14 @@ public class UsersServiceImpl implements UsersService,Tencent {
 	@Override
 	public void saveOrder(HbOrder order) {
 		this.hbOrderMapper.insert(order);
+	}
+
+	@Override
+	public JSONObject refund(HttpServletRequest request) {
+		String telephone = request.getParameter("telephone");
+		HbUser user = this.hbUserMapper.selectByPhone(telephone);
+		HbUserCash userCash = this.hbUserCashMapper.selectByPrimaryKey2(user.getUserId());
+		return new impl().refund(request,userCash,hbUserCashMapper);
 	}
 
 }

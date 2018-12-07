@@ -10,8 +10,18 @@ public class HbUserCash {
     private Integer userCashType;
 
     private Integer userCashStatus;
+    private String orderidWeix;
+    
+    
+    public String getOrderidWeix() {
+		return orderidWeix;
+	}
 
-    public String getUserId() {
+	public void setOrderidWeix(String orderidWeix) {
+		this.orderidWeix = orderidWeix;
+	}
+
+	public String getUserId() {
         return userId;
     }
 

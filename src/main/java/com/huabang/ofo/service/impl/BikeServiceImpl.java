@@ -15,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.bootdo.ofo.dao.HbUserCashMapper;
 import com.bootdo.ofo.domain.HbUserCash;
+import com.huabang.ofo.dao.HbAccountsMapper;
 import com.huabang.ofo.dao.HbDetailsMapper;
 import com.huabang.ofo.dao.HbJourneysMapper;
 import com.huabang.ofo.dao.HbSharesMapper;
 import com.huabang.ofo.dao.HbUsersMapper;
+import com.huabang.ofo.domain.HbAccount;
 import com.huabang.ofo.domain.HbDetail;
 import com.huabang.ofo.domain.HbJourney;
 import com.huabang.ofo.domain.HbShare;
@@ -40,7 +42,8 @@ public class BikeServiceImpl implements BikeService {
 	private HbDetailsMapper hbDetailMapper;
 	@Autowired
 	private HbUserCashMapper hbUserCashMapper;
-	
+	@Autowired
+	private HbAccountsMapper hbAccountMapper;
 	@Override
 	public JSONObject useBike(String shareId,String telePhone) {
 		HbShare share = this.hbShareMapper.selectByPrimaryKey(shareId);
@@ -89,6 +92,8 @@ public class BikeServiceImpl implements BikeService {
 		share.setSharePot(pot);
 		this.hbShareMapper.updateByPrimaryKeySelective(share);
 		
+		HbAccount account = this.hbAccountMapper.selectByUserId(share.getShare_userid());
+		
 		JSONObject object = new JSONObject();
 		HbJourney journey = this.hbJourneyMapper.selectByShareId(shareId);
 		long startDate = journey.getJourneyCreatetime().getTime();
@@ -128,6 +133,8 @@ public class BikeServiceImpl implements BikeService {
 		int i = this.hbJourneyMapper.updateByPrimaryKeySelective(journey);
 		if(i>0){
 			hbShareMapper.updateStatusAndUserByid(null,null,shareId);
+			account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())-journey.getJourneyMoney()));
+			this.hbAccountMapper.updateByPrimaryKey(account);
 			object.put("code", "200");
 			object.put("msg", "结束用车成功");
 			return object;

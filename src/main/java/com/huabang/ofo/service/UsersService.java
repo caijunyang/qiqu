@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.huabang.ofo.domain.HbAccount;
 import com.huabang.ofo.domain.HbOrder;
 import com.huabang.ofo.domain.HbUser;
@@ -97,5 +98,9 @@ public interface UsersService {
 	 * @param order
 	 */
 	public void saveOrder(HbOrder order);
+	/**
+	 * 微信退款
+	 * */
+	public JSONObject refund(HttpServletRequest request);
 	
 }

@@ -115,7 +115,7 @@ public class ControlServiceImpl implements ControlService {
 					HbUser user = this.hbuserMapper.selectByPrimaryKey(order.getOrderUserid());
 					HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
 					account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+order.getOrderPrice()));
-					account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
+					// account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
 					this.hbAccountMapper.updateByPrimaryKey(account);
 					//修改订单状态
 					hbOrdersMapper.updateStatus(request.getParameter("out_trade_no"),"1");
@@ -126,12 +126,12 @@ public class ControlServiceImpl implements ControlService {
 					cash.setUserCashStatus(0);
 					this.hbUserCashMapper.updateByPrimaryKeySelective(cash);
 					//用户账户余额的修改
-					if(cash.getUserAccountMoney()!=null ||cash.getUserAccountMoney().equals("") ){
-						HbAccount account = this.hbAccountMapper.selectByUserId(order.getOrderUserid());
-						account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+Double.parseDouble(cash.getUserAccountMoney())));
-						account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
+					//if(cash.getUserAccountMoney()!=null ||cash.getUserAccountMoney().equals("") ){
+					//	HbAccount account = this.hbAccountMapper.selectByUserId(order.getOrderUserid());
+					//	account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+Double.parseDouble(cash.getUserAccountMoney())));
+					//	account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
 						// this.hbAccountMapper.updateByPrimaryKeySelective(account);
-					}
+					//}
 					//修改订单状态
 					hbOrdersMapper.updateStatus(request.getParameter("out_trade_no"),"1");
 					//修改用户的认证状态
@@ -188,10 +188,10 @@ public class ControlServiceImpl implements ControlService {
 					HbUser user = this.hbuserMapper.selectByPrimaryKey(order.getOrderUserid());
 					HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
 					account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+order.getOrderPrice()));
-					account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
+					// account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
 					this.hbAccountMapper.updateByPrimaryKey(account);
 					//修改订单状态
-					hbOrdersMapper.updateStatus(request.getParameter("out_trade_no"),"1");
+					hbOrdersMapper.updateStatus(map.get("out_trade_no"),"1");
 				}else{ // 押金
 					//押金的修改
 					String orderCashId = order.getOrderCashId();
@@ -199,14 +199,14 @@ public class ControlServiceImpl implements ControlService {
 					cash.setUserCashStatus(0);
 					this.hbUserCashMapper.updateByPrimaryKeySelective(cash);
 					//用户账户余额的修改
-					if(cash.getUserAccountMoney()!=null ||cash.getUserAccountMoney().equals("") ){
-						HbAccount account = this.hbAccountMapper.selectByUserId(order.getOrderUserid());
-						account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+Double.parseDouble(cash.getUserAccountMoney())));
-						account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
+					//if(cash.getUserAccountMoney()!=null ||cash.getUserAccountMoney().equals("") ){
+					//	HbAccount account = this.hbAccountMapper.selectByUserId(order.getOrderUserid());
+					//	account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+Double.parseDouble(cash.getUserAccountMoney())));
+					//	account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
 						// this.hbAccountMapper.updateByPrimaryKeySelective(account);
-					}
+					//}
 					//修改订单状态
-					hbOrdersMapper.updateStatus(request.getParameter("out_trade_no"),"1");
+					hbOrdersMapper.updateStatus(map.get("out_trade_no"),"1");
 					//修改用户的认证状态
 					HbUser user = this.hbuserMapper.selectByPrimaryKey(orderCashId);
 					user.setUserApprove(1);

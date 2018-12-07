@@ -1,9 +1,6 @@
 package com.huabang.ofo.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bootdo.ofo.domain.HbCashmoney;
 import com.bootdo.ofo.domain.HbPaymoney;
@@ -35,6 +30,7 @@ import com.bootdo.ofo.service.CashService;
 import com.bootdo.ofo.service.MoneyService;
 import com.huabang.ofo.dao.HbJourneysMapper;
 import com.huabang.ofo.dao.HbOrdersMapper;
+import com.huabang.ofo.dao.HbUserCashsMapper;
 import com.huabang.ofo.domain.HbAccount;
 import com.huabang.ofo.domain.HbAuthcode;
 import com.huabang.ofo.domain.HbJourney;
@@ -48,9 +44,6 @@ import com.huabang.ofo.utils.SendMsgUtils2;
 import com.huabang.ofo.utils.alipay.util.AliPayUtil;
 import com.huabang.ofo.utils.weixin.Utils.WeixinPayUtil;
 import com.refund.impl;
-import com.tenpay.client.TenpayHttpClient;
-import com.tenpay.util.HttpClientUtil;
-import com.tenpay.util.XMLUtil;
 
 @Controller
 @RequestMapping("/user")
@@ -68,6 +61,8 @@ public class UsersController{
 	private HbOrdersMapper hbOrdersMapper;
 	@Autowired
 	private HbJourneysMapper hbJourneyMapper;
+	@Autowired
+	private HbUserCashsMapper hbUserCashMapper;
 	/**
 	 * 发送验证码
 	 * 
@@ -295,8 +290,7 @@ public class UsersController{
 		
 		String telephone = (String)map.get("telephone");
 		String type = (String)map.get("type");
-		//String client = (String)map.getOrDefault("client","1");//客户端类型 2为小程序，其他为APP，可以空，空为APP
-		String openid = (String)map.getOrDefault("openid","0");
+		String client = (String)map.getOrDefault("client","1");//客户端类型 2为小程序，其他为APP，可以空，空为APP
 		List<HbCashmoney> searchMoney = cashService.searchMoney();
 		Integer cashMoney = searchMoney.get(0).getCashMoney();
 		
@@ -307,11 +301,27 @@ public class UsersController{
 		request.setAttribute("cashType", "0");
 		request.setAttribute("telephone", telephone);
 		request.setAttribute("type", "0");
-		request.setAttribute("openid", openid);
-		JSONObject pay=null;
+		request.setAttribute("trade_type", client.equals("2")?"JSAPI":"APP");
+		JSONObject pay=new JSONObject();
+		
+		HbUser user = this.userServiceImpl.selectUserObject(String.valueOf(request.getAttribute("telephone")));
+		if(user==null){
+			pay.put("msg", "该手机用户不存在");
+			pay.put("code", "400");
+			return pay;
+		}
+		HbUserCash userCash = hbUserCashMapper.selectByPrimaryKey2(user.getUserId());
+		if(userCash!=null){
+			pay.put("msg", "押金已经缴纳");
+			pay.put("code", "400");
+			return pay;
+		}
 		if(type.equals("aliy")){
-			AliPayUtil util = new AliPayUtil(userServiceImpl);
-			 pay = util.pay(request); 
+			//AliPayUtil util = new AliPayUtil(userServiceImpl);
+			// pay = util.pay(request); 
+			pay.put("code", "400");
+			pay.put("msg", "押金充值暂时关闭支付宝功能");
+			return pay;
 		}else if(type.equals("weix")){
 			WeixinPayUtil util = new WeixinPayUtil(userServiceImpl);
 			 pay = util.pay(request,response);
@@ -331,14 +341,13 @@ public class UsersController{
 		String telephone = (String)map.get("telephone");
 		String money = (String)map.get("money");
 		String type = (String)map.get("type");//aliy:支付宝,weix:微信支付
-		//String client = (String)map.getOrDefault("client","1");//客户端类型 2为小程序，其他为APP，可以空，空为APP
-		String openid = (String)map.getOrDefault("openid","0");
+		String client = (String)map.getOrDefault("client","1");//客户端类型 2为小程序，其他为APP，可以空，空为APP
 	
 		request.setAttribute("title", "充值余额");
 		request.setAttribute("totalMoney", money);
 		request.setAttribute("telephone", telephone);
 		request.setAttribute("type", "1");
-		request.setAttribute("openid", openid);
+		request.setAttribute("trade_type", client.equals("2")?"JSAPI":"APP");
 		if(type.equals("aliy")){
 			AliPayUtil util = new AliPayUtil(userServiceImpl);
 			JSONObject pay = util.pay(request);
@@ -357,9 +366,7 @@ public class UsersController{
 	@ResponseBody
 	public JSONObject returMoney(HttpServletRequest request) throws UnsupportedEncodingException {
 	//根据订单号查出金额和积分
-	String refund=new impl().refund(request);
-	JSONObject JSONObject=new JSONObject();
-	JSONObject.put("msg", refund);
+	JSONObject JSONObject=userServiceImpl.refund(request);
 	return JSONObject;
 
 	}
@@ -461,40 +468,5 @@ public class UsersController{
 		datamap.put("detail", datalist);
 		res.put("data", datamap);
 		return res;
-	}
-	/**
-	 * 获取openid
-	 * @throws IOException 
-	 * @throws JDOMException 
-	 */
-	@PostMapping("/getopenid")
-	@ResponseBody
-	public JSONObject getOpenId(@RequestParam Map<String,String> map) throws IOException, JDOMException{
-		String code = map.get("code");
-		String url="https://api.weixin.qq.com/sns/jscode2session?appid=wxd4af668b52e7a183&secret=f2b1dceb66fe3f565d8be35e85ac2312&js_code=" + code + "&grant_type=authorization_code";
-		JSONObject resJson= new JSONObject();
-		//请求
-		HttpURLConnection httpConnection = HttpClientUtil.getHttpURLConnection(url);
-        httpConnection.setConnectTimeout(30 * 1000);
-        httpConnection.setUseCaches(false);
-        httpConnection.setDoInput(true);
-        httpConnection.setDoOutput(true);
-        httpConnection.setRequestMethod("GET");
-       
-        int responseCode = httpConnection.getResponseCode();
-        
-        InputStream inputStream = httpConnection.getInputStream();
-        JSONObject data=new JSONObject();
-        if(inputStream!=null) {
-        	String resContent = HttpClientUtil.InputStreamTOString(inputStream,"utf8"); 
-        	JSONObject temJson=JSON.parseObject(resContent);
-        	System.out.println(temJson);
-        	data.put("openid", temJson.getString("openid"));
-        }
-        inputStream.close();
-        resJson.put("code", "200");
-        resJson.put("msg", "");
-        resJson.put("data", data);
-	    return resJson;
 	}
 }

@@ -30,4 +30,6 @@ public interface HbUserCashsMapper {
     int updateByPrimaryKey(HbUserCash record);
 
 	HbUserCash selectByPrimaryKey2(String userId);
+
+	void returnCash(@Param("outtradeno")String outtradeno);
 }
