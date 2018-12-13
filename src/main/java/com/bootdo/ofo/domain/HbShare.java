@@ -4,8 +4,26 @@ public class HbShare {
     private String shareId;
 
     private String sharePot;
+    private String share_status;
+    private String share_userid;
+    
+    public String getShare_status() {
+		return share_status;
+	}
 
-    public String getShareId() {
+	public void setShare_status(String share_status) {
+		this.share_status = share_status;
+	}
+
+	public String getShare_userid() {
+		return share_userid;
+	}
+
+	public void setShare_userid(String share_userid) {
+		this.share_userid = share_userid;
+	}
+
+	public String getShareId() {
         return shareId;
     }
 

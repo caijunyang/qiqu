@@ -121,7 +121,9 @@ public class BikeServiceImpl implements BikeService {
 		}
 		HbShare s = new HbShare();
 		s.setSharePot(journey.getJourneyStartpot());
+		System.out.println(pot+"------------------");
 		String[] split = pot.split(",");
+		System.out.println(split.length+"------------------");
 		double d = LatAndLntUtils.latAndLnt(s, split[0], split[1]);
 		journey.setJourneyDistance(d);
 		journey.setJourneyEndpot(pot);
