@@ -7,9 +7,9 @@ server:
     port: 443
 #    uri-encoding: utf-8
     ssl:
-        key-store: classpath:_.wenboon.com.jks
+        key-store: classpath:_.youyayoyo.com.jks
         key-store-type: JKS
-        key-store-password: wenboon
+        key-store-password: youyayoyo
 security:
   basic:
     enabled: false
