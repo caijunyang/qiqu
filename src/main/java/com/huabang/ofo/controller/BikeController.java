@@ -56,6 +56,7 @@ public class BikeController {
 		String lat = (String)map.get("lat");
 		String lng = (String)map.get("lng");
 		String pot = lat +","+ lng;
+		System.out.println(pot+"+++++++++++++++++++++");
 		JSONObject result = this.bikeServiceImpl.endUseBike(shareId,pot);
 		return result;
 	}

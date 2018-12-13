@@ -226,9 +226,10 @@ public class UsersController{
 		if(hbAccount==null){
 			object.put("code","400");
 			object.put("msg","该手机号余额信息不存在");
+		}else{
+			object.put("code","200");
+			object.put("data", hbAccount);
 		}
-		object.put("code","200");
-		object.put("data", hbAccount);
 		return object.toJSONString();
 	}
 	
