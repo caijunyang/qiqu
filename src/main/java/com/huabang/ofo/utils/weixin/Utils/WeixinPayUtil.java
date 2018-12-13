@@ -36,7 +36,7 @@ public class WeixinPayUtil {
         PrepayIdRequestHandler prepayReqHandler = new PrepayIdRequestHandler(request, response);
         String totalFee =request.getAttribute("totalMoney").toString();
         int total_fee=(int) (Float.valueOf(totalFee)*100);//金额单位默认是分
-        prepayReqHandler.setParameter("appid", ConstantUtil.APP_ID);
+        //prepayReqHandler.setParameter("appid", ConstantUtil.APP_ID);
         prepayReqHandler.setParameter("body", ConstantUtil.BODY);
         prepayReqHandler.setParameter("mch_id", ConstantUtil.MCH_ID);
         String nonce_str = WXUtil.getNonceStr();
@@ -49,7 +49,16 @@ public class WeixinPayUtil {
         prepayReqHandler.setParameter("time_start", timestamp);
         System.out.println(String.valueOf(total_fee));
         prepayReqHandler.setParameter("total_fee", String.valueOf(total_fee));
-        prepayReqHandler.setParameter("trade_type", request.getAttribute("trade_type"));
+        //prepayReqHandler.setParameter("trade_type", request.getAttribute("trade_type"));
+        if(request.getAttribute("openid")=="0") {//app配置
+            prepayReqHandler.setParameter("appid", ConstantUtil.APP_ID);
+        	prepayReqHandler.setParameter("trade_type","APP");
+        }
+        else {//小程序
+        	prepayReqHandler.setParameter("trade_type","JSAPI");
+        	prepayReqHandler.setParameter("openid",request.getAttribute("openid"));
+        	prepayReqHandler.setParameter("appid", "wxd4af668b52e7a183");
+        }
         prepayReqHandler.setParameter("sign", prepayReqHandler.createMD5Sign());
 	    prepayReqHandler.setGateUrl(ConstantUtil.GATEURL);
         /**
@@ -87,22 +96,38 @@ public class WeixinPayUtil {
 		        String prepayid = prepayReqHandler.sendPrepay();
 		        // 若获取prepayid成功，将相关信息返回客户端
 		        if (prepayid != null && !prepayid.equals("")) {
-		            String signs = "appid=" + ConstantUtil.APP_ID + "&noncestr=" + nonce_str + "&package=Sign=WXPay&partnerid="
-		                    + ConstantUtil.PARTNER_ID + "&prepayid=" + prepayid + "&timestamp=" + timestamp + "&key="
-		                    + ConstantUtil.APP_KEY;
-		            map.put("code", 0);
-		            map.put("info", "success");
-		            map.put("prepayid", prepayid);
-		            /**
-		             * 签名方式与上面类似
-		             */
-		            map.put("sign", MD5Util.MD5Encode(signs, "utf8").toUpperCase());
-		            map.put("appid", ConstantUtil.APP_ID);
-		            map.put("timestamp", timestamp);  //等于请求prepayId时的time_start
-		            map.put("noncestr", nonce_str);   //与请求prepayId时值一致
-		            map.put("package", "Sign=WXPay");  //固定常量
-		            map.put("partnerid", ConstantUtil.PARTNER_ID);
-		            
+		        	if(request.getAttribute("openid")=="0") {
+			            String signs = "appid=" + ConstantUtil.APP_ID + "&noncestr=" + nonce_str + "&package=Sign=WXPay&partnerid="
+			                    + ConstantUtil.PARTNER_ID + "&prepayid=" + prepayid + "&timestamp=" + timestamp + "&key="
+			                    + ConstantUtil.APP_KEY;
+			            map.put("code", 0);
+			            map.put("info", "success");
+			            map.put("prepayid", prepayid);
+			            /**
+			             * 签名方式与上面类似
+			             */
+			            map.put("sign", MD5Util.MD5Encode(signs, "utf8").toUpperCase());
+			            map.put("appid", ConstantUtil.APP_ID);
+			            map.put("timestamp", timestamp);  //等于请求prepayId时的time_start
+			            map.put("noncestr", nonce_str);   //与请求prepayId时值一致
+			            map.put("package", "Sign=WXPay");  //固定常量
+			            map.put("partnerid", ConstantUtil.PARTNER_ID);
+		        	}
+		        	else {
+		        		PrepayIdRequestHandler resHandler = new PrepayIdRequestHandler(request, response);
+		        		resHandler.setParameter("appId", prepayReqHandler.getParameter("appid"));
+		        		resHandler.setParameter("timeStamp", timestamp);
+		        		resHandler.setParameter("nonceStr", nonce_str);
+		        		resHandler.setParameter("package", "prepay_id=" + prepayid);
+		        		resHandler.setParameter("signType", "MD5");
+		        		map.put("appid", prepayReqHandler.getParameter("appid"));
+		        		map.put("timestamp", timestamp); 
+		        		map.put("noncestr", nonce_str); 
+		        		map.put("package", "prepay_id=" + prepayid);
+		        		map.put("signType", "MD5");
+		        		map.put("prepayid", prepayid);
+			            map.put("sign", resHandler.createMD5Sign());
+		        	}
 		            mymap.put("sdk",map);
 					object.put("data", mymap);
 		            object.put("code", "200");
