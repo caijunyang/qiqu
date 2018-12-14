@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class HbOrder {
     private String orderId;
-    private String order_status;
+    private String orderStatus;
     private String orderUserid;
     
     private String orderCashId;
@@ -15,16 +15,29 @@ public class HbOrder {
 
     private Integer orderType;
 
-    public String getOrderId() {
+    private String orderFixed;
+    
+    
+	public String getOrderFixed() {
+		return orderFixed;
+	}
+
+	public void setOrderFixed(String orderFixed) {
+		this.orderFixed = orderFixed;
+	}
+
+	public String getOrderId() {
         return orderId;
     }
 
-    public String getOrder_status() {
-		return order_status;
+   
+
+	public String getOrderStatus() {
+		return orderStatus;
 	}
 
-	public void setOrder_status(String order_status) {
-		this.order_status = order_status;
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 
 	public void setOrderId(String orderId) {

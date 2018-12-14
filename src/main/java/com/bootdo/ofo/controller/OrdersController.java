@@ -37,6 +37,8 @@ public class OrdersController {
 				params.put("orderType", "1");
 			}else if(type.equals("退款")){
 				params.put("orderType", "2");
+			}else if(type.equals("消费")){
+				params.put("orderType", "3");
 			}
 		}
 		Query query = new Query(params);

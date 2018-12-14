@@ -67,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    order_id, order_userid,order_cash_id, order_price, order_createtime, order_type
+    order_id, order_userid,order_cash_id, order_price, order_createtime, order_type,order_status
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.huabang.ofo.domain.HbOrderExample" >
     select
@@ -104,9 +104,9 @@
   </delete>
   <insert id="insert" parameterType="com.huabang.ofo.domain.HbOrder" >
     insert into hb_order (order_id, order_userid,order_cash_id, order_price, 
-      order_createtime, order_type)
+      order_createtime, order_type,order_fixed)
     values (#{orderId,jdbcType=VARCHAR}, #{orderUserid,jdbcType=VARCHAR}, #{orderCashId,jdbcType=VARCHAR}, #{orderPrice,jdbcType=DOUBLE}, 
-      #{orderCreatetime,jdbcType=TIMESTAMP}, #{orderType,jdbcType=INTEGER})
+      #{orderCreatetime,jdbcType=TIMESTAMP}, #{orderType,jdbcType=INTEGER}, #{orderFixed,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.huabang.ofo.domain.HbOrder" >
     insert into hb_order

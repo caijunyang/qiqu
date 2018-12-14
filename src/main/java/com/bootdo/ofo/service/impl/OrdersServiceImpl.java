@@ -32,6 +32,8 @@ public class OrdersServiceImpl implements OrdersService {
 				map.put("order_type", "充值");
 			}else if(type == 2){
 				map.put("order_type", "退款");
+			}else if(type == 3){
+				map.put("order_type", "消费");
 			}
 		}
 		PageDO<Map<String, Object>> page = new PageDO<>();

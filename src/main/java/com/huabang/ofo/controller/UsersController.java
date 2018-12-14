@@ -350,12 +350,17 @@ public class UsersController{
 		String money = (String)map.get("money");
 		String type = (String)map.get("type");//aliy:支付宝,weix:微信支付
 		String openid = (String)map.getOrDefault("openid","0");
-	
 		request.setAttribute("title", "充值余额");
 		request.setAttribute("totalMoney", money);
 		request.setAttribute("telephone", telephone);
 		request.setAttribute("type", "1");
 		request.setAttribute("openid", openid);
+		
+		String fixed = (String)map.get("fixed");//1一次性支付  0普通支付
+		if(fixed.equals("1")){
+			request.setAttribute("type", "3");
+		}
+		
 		if(type.equals("aliy")){
 			AliPayUtil util = new AliPayUtil(userServiceImpl);
 			JSONObject pay = util.pay(request);

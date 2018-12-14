@@ -82,6 +82,10 @@ public class WeixinPayUtil {
 				this.userServiceImpl.saveUserCash(cash);
 				order.setOrderType(0);
 				order.setOrderCashId(user.getUserId());
+			}else if(type.equals("3")){
+				order.setOrderType(3);
+				order.setOrderCashId(null);
+				order.setOrderFixed("1");
 			}else{//充值
 				order.setOrderType(1);
 				order.setOrderCashId(null);
@@ -129,6 +133,7 @@ public class WeixinPayUtil {
 			            map.put("sign", resHandler.createMD5Sign());
 		        	}
 		            mymap.put("sdk",map);
+		            mymap.put("orderid",out_trade_no);
 					object.put("data", mymap);
 		            object.put("code", "200");
 		        	object.put("msg", "获取签名成功");

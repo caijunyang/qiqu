@@ -114,6 +114,10 @@ public class AliPayUtil {
 				this.userServiceImpl.saveUserCash(cash);
 				order.setOrderCashId(user.getUserId());
 				order.setOrderType(0);
+			}else if(type.equals("3")){//固定金额支付
+				order.setOrderType(3);
+				order.setOrderCashId(null);
+				order.setOrderFixed("1");
 			}else{
 				order.setOrderType(1);
 				order.setOrderCashId(null);
@@ -128,6 +132,7 @@ public class AliPayUtil {
 			String body = response.getBody();
 			object.put("msg", "签名获取成功");
 			map.put("sdk",body);
+			map.put("orderid",numeric);
 			object.put("data", map);
 			object.put("code", "200");
 			return object;

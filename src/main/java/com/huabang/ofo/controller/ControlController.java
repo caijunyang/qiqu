@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+import com.huabang.ofo.dao.HbOrdersMapper;
+import com.huabang.ofo.domain.HbOrder;
 import com.huabang.ofo.service.ControlService;
 
 @Controller
@@ -18,7 +21,8 @@ public class ControlController {
 
 	@Autowired
 	private ControlService controlServiceImpl;
-	
+	@Autowired
+	private HbOrdersMapper hbOrdersMapper;
 	/**
 	 * 都可以缴纳多少押金
 	 * @return
@@ -58,6 +62,23 @@ public class ControlController {
 	@ResponseBody
 	public void app_weixpayCallBack(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		this.controlServiceImpl.weixhuiDiao(request,response);
+	}
+	
+	/**
+	 * 固定金额轮询状态
+	 * */
+	@PostMapping("/order_status")
+	@ResponseBody
+	public JSONObject order_status(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		JSONObject JSONObject=new JSONObject();
+		String orderid = request.getParameter("orderid");
+		HbOrder order = this.hbOrdersMapper.selectByPrimaryKey(orderid);
+		if(order==null || order.getOrderStatus()==null){
+			JSONObject.put("code", "400");
+		}else{
+			JSONObject.put("code", "200");
+		}
+		return JSONObject;
 	}
 	
 }

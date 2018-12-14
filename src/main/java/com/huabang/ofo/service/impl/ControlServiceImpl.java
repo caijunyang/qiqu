@@ -111,12 +111,14 @@ public class ControlServiceImpl implements ControlService {
 			if(trade_status.equalsIgnoreCase("TRADE_SUCCESS")){		    //支付成功
 				//通过自定义的订单号将该订单查询出来
 				HbOrder order = this.hbOrdersMapper.selectByPrimaryKey(request.getParameter("out_trade_no"));
-				if(order.getOrderCashId() == null){//充值
-					HbUser user = this.hbuserMapper.selectByPrimaryKey(order.getOrderUserid());
-					HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
-					account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+order.getOrderPrice()));
-					// account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
-					this.hbAccountMapper.updateByPrimaryKey(account);
+				if(order.getOrderCashId() == null){//充值或单次
+					if(order.getOrderFixed()==null || order.getOrderFixed().equals("0")){
+						HbUser user = this.hbuserMapper.selectByPrimaryKey(order.getOrderUserid());
+						HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
+						account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+order.getOrderPrice()));
+						// account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
+						this.hbAccountMapper.updateByPrimaryKey(account);
+					}
 					//修改订单状态
 					hbOrdersMapper.updateStatus(request.getParameter("out_trade_no"),"1");
 				}else{ // 押金
@@ -185,11 +187,13 @@ public class ControlServiceImpl implements ControlService {
                 String string = Long.valueOf(map.get("out_trade_no")).toString();
 				HbOrder order = this.hbOrdersMapper.selectByPrimaryKey(string);
 				if(order.getOrderCashId() == null){//充值
-					HbUser user = this.hbuserMapper.selectByPrimaryKey(order.getOrderUserid());
-					HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
-					account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+order.getOrderPrice()));
-					// account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
-					this.hbAccountMapper.updateByPrimaryKey(account);
+					if(order.getOrderFixed()==null || order.getOrderFixed().equals("0")){
+						HbUser user = this.hbuserMapper.selectByPrimaryKey(order.getOrderUserid());
+						HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
+						account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())+order.getOrderPrice()));
+						// account.setAccountPay(Double.parseDouble(account.getAccountTotel()));
+						this.hbAccountMapper.updateByPrimaryKey(account);
+					}
 					//修改订单状态
 					hbOrdersMapper.updateStatus(map.get("out_trade_no"),"1");
 				}else{ // 押金
