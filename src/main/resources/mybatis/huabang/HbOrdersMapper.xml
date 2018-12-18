@@ -67,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    order_id, order_userid,order_cash_id, order_price, order_createtime, order_type,order_status
+    order_id, order_userid,order_cash_id, order_price, order_createtime, order_type,order_status,order_fixed
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.huabang.ofo.domain.HbOrderExample" >
     select
