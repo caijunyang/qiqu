@@ -34,12 +34,19 @@ public class BikeController {
 	public JSONObject useBike(@RequestParam Map<String,String> map){
 		String shareId = (String)map.get("shareId");
 		String telePhone = (String)map.get("telephone");
+		String type = (String)map.get("type");
 		System.out.println(shareId+"++++++++++++"+telePhone);
 		/*String lat = (String)map.get("lat");
 		String lng = (String)map.get("lng");*/
 		/*String pot = lat + lng;*/
-		JSONObject result = this.bikeServiceImpl.useBike(shareId,telePhone);
-		return result;
+		if(type.equals("1")){
+			JSONObject result = this.bikeServiceImpl.useBike(shareId,telePhone);
+			return result;
+		}else if(type.equals("2")){
+			JSONObject result = this.bikeServiceImpl.useBike2(shareId,telePhone);
+			return result;
+		}
+		return null;
 	}
 	/**
 	 * 结束用车

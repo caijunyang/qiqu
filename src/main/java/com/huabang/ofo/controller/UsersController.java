@@ -1,5 +1,6 @@
 package com.huabang.ofo.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +57,8 @@ import com.tenpay.util.HttpClientUtil;
 @RequestMapping("/user")
 public class UsersController{
 
+	 // @Value("${cbs.imagesPath}")
+	  private String theSetDir="file:/usr/local/uploadimg/"; //全局配置文件中设置的图片的路径
 	@Autowired
 	private UsersService userServiceImpl;
 	@Autowired
@@ -69,6 +73,10 @@ public class UsersController{
 	private HbJourneysMapper hbJourneyMapper;
 	@Autowired
 	private HbUserCashsMapper hbUserCashMapper;
+	
+	
+
+	
 	/**
 	 * 发送验证码
 	 * 
@@ -191,15 +199,26 @@ public class UsersController{
 	@PostMapping(value = "/uploadimg")
 	public JSONObject upload(@RequestParam("files") MultipartFile file, HttpServletRequest request,@RequestParam Map<String,String> map) {
 		JSONObject jsonObject = new JSONObject();
-		String path = request.getSession().getServletContext().getRealPath("src/main/resources/static/image/");
+		
+		String parentDirPath = theSetDir.substring(theSetDir.indexOf(':')+1, theSetDir.length()); //通过设置的那个字符串获得存放图片的目录路径
+        String fileName = file.getOriginalFilename();
+
+        File parentDir = new File(parentDirPath);
+        if(!parentDir.exists()) {//如果那个目录不存在先创建目录
+            parentDir.mkdir();
+        }
+		
+		//String path = request.getSession().getServletContext().getRealPath("src/main/resources/static/image/");
+		//path=parentDirPath;
+		
 		String telephone = (String)map.get("telephone");
 		Integer type = Integer.parseInt(map.get("type"));
-		String fileName = file.getOriginalFilename();
 		fileName = FileUtil.renameToUUID(fileName).replace("-", "");
 		try {
-			FileUtil.uploadFile(file.getBytes(), path, fileName);
+			//FileUtil.uploadFile(file.getBytes(), path, fileName);
+			file.transferTo(new File(parentDirPath + fileName)); //全局配置文件中配置的目录加上文件名
 			//保存数据库
-			String image = this.userServiceImpl.savaImage(type,"/src/main/resources/static/image/"+fileName,telephone);
+			String image = this.userServiceImpl.savaImage(type,"/images/"+fileName,telephone);
 			if(image==null){
 				jsonObject.put("code", "400");
 				jsonObject.put("msg","该手机用户不存在");

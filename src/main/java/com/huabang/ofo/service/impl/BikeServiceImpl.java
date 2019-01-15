@@ -44,6 +44,51 @@ public class BikeServiceImpl implements BikeService {
 	private HbUserCashMapper hbUserCashMapper;
 	@Autowired
 	private HbAccountsMapper hbAccountMapper;
+	
+	@Override
+	public JSONObject useBike2(String shareId, String telePhone) {
+		HbShare share = this.hbShareMapper.selectByPrimaryKey(shareId);
+		HbUser user = this.hbUserMapper.selectByPhone(telePhone);
+		JSONObject object = new JSONObject();
+		object.put("code","400");
+		if (share == null) {
+			object.put("msg", "车牌号不正确");
+			return object;
+		}
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		HbJourney journey = new HbJourney();
+		journey.setJourneyId(UUID.randomUUID().toString().replace("-", ""));
+		journey.setJourneyShareid(shareId);
+		journey.setJourneyUserid(user.getUserId());
+		try {
+			journey.setJourneyCreatetime(format.parse(format.format(new Date())));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		journey.setJourneyStartpot(share.getSharePot());
+		int i = this.hbJourneyMapper.insertSelective(journey);
+		
+		if(i>0){
+			journey.setJourneyMoney(2.0);
+			journey.setJourneyTime(-1);
+			hbJourneyMapper.updateByPrimaryKeySelective(journey);
+			// hbShareMapper.updateStatusAndUserByid("1",user.getUserId(),shareId);
+			HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
+			if(Double.parseDouble(account.getAccountTotel())<0){
+				object.put("msg", "开启失败,余额不足");
+				return object;
+			}
+			
+			account.setAccountTotel(String.valueOf(Double.parseDouble(account.getAccountTotel())-2));
+			this.hbAccountMapper.updateByPrimaryKey(account);
+			object.put("msg", "使用成功");
+			object.put("code","200");
+			return object;
+		}
+		object.put("msg", "开启失败,请重试");
+		return object;
+	}
+	
 	@Override
 	public JSONObject useBike(String shareId,String telePhone) {
 		HbShare share = this.hbShareMapper.selectByPrimaryKey(shareId);
@@ -64,6 +109,12 @@ public class BikeServiceImpl implements BikeService {
 			object.put("msg", "请缴纳押金");
 			return object;
 		}
+		HbAccount account = this.hbAccountMapper.selectByUserId(user.getUserId());
+		if(Double.parseDouble(account.getAccountTotel())<0){
+			object.put("msg", "开启失败,余额不足");
+			return object;
+		}
+		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		HbJourney journey = new HbJourney();
 		journey.setJourneyId(UUID.randomUUID().toString().replace("-", ""));
@@ -145,6 +196,9 @@ public class BikeServiceImpl implements BikeService {
 		object.put("msg", "结束用车失败");
 		return object;
 	}
+	
+	
+	
 	@Override
 	public JSONObject getUseBike(String telePhone) {
 		HbUser user = this.hbUserMapper.selectByPhone(telePhone);

@@ -10,4 +10,6 @@ public interface BikeService {
 
 	JSONObject getUseBike(String telePhone);
 
+	JSONObject useBike2(String shareId, String telePhone);
+
 }

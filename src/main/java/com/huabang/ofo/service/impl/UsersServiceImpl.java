@@ -84,7 +84,7 @@ public class UsersServiceImpl implements UsersService,Tencent {
 //		hbUser.setUserBirthday(null); 生日
 //		hbUser.setUserSex(null);  性别
 		//hbUser.setUserImage(imageUrl+"default.jpg");
-		hbUser.setUserImage("/src/main/resources/static/image/default.jpg");
+		hbUser.setUserImage("/images/u=1394969417,3934508970&fm=27&gp=0.jpg");
 		
 //		hbUser.setUserApprove(0);
 //		hbUser.setUserStatus(0);
